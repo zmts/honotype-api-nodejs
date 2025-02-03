@@ -1,0 +1,30 @@
+{
+  "name": "honotype",
+  "author": "Sasha Zmts",
+  "scripts": {
+    "dev:api-main": "npm run lint && tsx watch apps/api-main/main.ts",
+    "run:api-main": "node dist/apps/api-main/main.js",
+    "build": "rm -rf ./dist && tsc && tsc-alias",
+    "lint": "eslint \"{apps,libs,test}/**/*.ts\""
+  },
+  "dependencies": {
+    "@hono/node-server": "1.13.8",
+    "hono": "4.6.20",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.17.16",
+    "@typescript-eslint/eslint-plugin": "8.22.0",
+    "@typescript-eslint/parser": "8.22.0",
+    "eslint": "8.57.1",
+    "eslint-config-prettier": "10.0.1",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-prettier": "5.2.3",
+    "eslint-plugin-unicorn": "56.0.1",
+    "eslint-plugin-unused-imports": "4.1.4",
+    "prettier": "3.4.2",
+    "tsc-alias": "1.8.10",
+    "tsx": "4.19.2",
+    "typescript": "5.7.3"
+  }
+}
