@@ -1,4 +1,4 @@
-import { IResponseOptions, HttpStatus } from './types';
+import { IResponseOptions, HttpStatus } from './types/types';
 
 const statusCodeMap = new Map<string, HttpStatus>([['POST', 201]]);
 

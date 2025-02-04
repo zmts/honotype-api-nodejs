@@ -1,6 +1,6 @@
 import { ApiResponse } from './api-response';
 import { Resource } from './resource';
-import { IPaginationResponse } from './types';
+import { IPaginationResponse } from './types/types';
 
 export class ResourceList<Contract> {
   private readonly list: any[];
