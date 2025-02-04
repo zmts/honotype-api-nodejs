@@ -1,5 +1,6 @@
 import { z, ZodType } from 'zod';
 
+import { ZodFrom } from '@libs/common/api';
 import { BaseValidator } from '@libs/core';
 
 export interface CreateDto {
@@ -12,6 +13,6 @@ export class CreateDto extends BaseValidator<CreateDto> {
     return z.object({
       name: z.string().min(3).max(500),
       title: z.string().min(3).max(500),
-    });
+    } as ZodFrom<CreateDto>);
   }
 }
