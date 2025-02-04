@@ -1,9 +1,5 @@
 import { z, ZodType } from 'zod';
 
-export function zodSchema<T extends { [key: string]: any }>(schema: ZodFrom<T>): ZodType {
+export const zodSchema = <T extends Record<string, any>>(schema: { [K in keyof T]: ZodType<T[K]> }): ZodType => {
   return z.object(schema);
-}
-
-type ZodFrom<T extends { [key: string]: any }> = {
-  [key in keyof T]: ZodType<T[key]>;
 };
