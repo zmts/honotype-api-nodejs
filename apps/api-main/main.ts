@@ -2,6 +2,7 @@ import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 
 import { globalExceptionHandler } from '@libs/common/api';
+import { appConfig } from '@libs/config';
 
 import { controllers } from './modules';
 
@@ -17,7 +18,6 @@ for (const ctl of controllers) {
 
 app.onError(globalExceptionHandler);
 
-const port = 3000;
-console.log(`Server is running on http://localhost:${port}`);
-
-serve({ fetch: app.fetch, port });
+const { port, host } = appConfig;
+console.log(`Server is running on http://${host}:${port}`);
+serve({ fetch: app.fetch, port, hostname: host });

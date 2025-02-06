@@ -3,3 +3,4 @@ export * from './ioc';
 export * from './base.controller';
 export * from './base.action';
 export * from './base-validator';
+export * from './typed-config';
