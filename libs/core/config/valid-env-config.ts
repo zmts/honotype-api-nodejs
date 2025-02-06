@@ -3,10 +3,10 @@ import { z, ZodType } from 'zod';
 
 dotenv.config();
 
-export class TypedConfig<T extends Record<string, any>> {
+export class ValidEnvConfig<T extends Record<string, any>> {
   private config: Partial<T> = {};
 
-  constructor(schema: { [K in keyof T]: { [envVar: string]: ZodType } | { default?: T[K] } }) {
+  constructor(schema: { [K in keyof T]: { [envVar: string]: ZodType<T[K]> } | { default?: T[K] } }) {
     for (const [key, envMapping] of Object.entries(schema)) {
       const [[envName, validator]] = Object.entries(envMapping);
 
@@ -34,7 +34,7 @@ export class TypedConfig<T extends Record<string, any>> {
     }
   }
 
-  getAll(): T {
+  result(): T {
     return this.config as T;
   }
 }
