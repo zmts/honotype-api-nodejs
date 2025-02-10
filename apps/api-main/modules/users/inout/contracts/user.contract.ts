@@ -1,4 +1,4 @@
 export class UserContract {
-  name: string;
-  title: string;
+  firstname: string;
+  lastname: string;
 }

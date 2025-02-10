@@ -1,23 +1,19 @@
-import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
+import process from 'node:process';
 
-import { globalExceptionHandler } from '@libs/common/api';
-import { appConfig } from '@libs/config';
+import { knexConfig } from '@api-main/database';
 
-import { controllers } from './modules';
+import { migrationsRunner } from '@libs/core';
 
-const app = new Hono().basePath('api');
+import { server } from './server';
 
-for (const ctl of controllers) {
-  const controller = new ctl();
-  controller
-    .init()
-    .then((): Hono => app.route('/', controller.routes))
-    .catch();
+async function start(): Promise<void> {
+  if (process.argv.includes('--migrations')) {
+    await migrationsRunner(knexConfig);
+  } else {
+    await server();
+  }
 }
 
-app.onError(globalExceptionHandler);
-
-const { port, host } = appConfig;
-console.log(`Server is running on http://${host}:${port}`);
-serve({ fetch: app.fetch, port, hostname: host });
+start().catch(e => {
+  throw e;
+});

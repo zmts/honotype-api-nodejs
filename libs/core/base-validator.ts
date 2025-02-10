@@ -13,8 +13,10 @@ export abstract class BaseValidator<T> {
   private validate(target: T, schema: ZodType<T>): true | Error {
     const { success, error } = schema.safeParse(target);
     if (!success) {
-      const errors = error.flatten().fieldErrors;
-      throw new AppError(ErrorCode.VALIDATION, { error: errors });
+      const rawErrors = error.flatten().fieldErrors;
+      const errors = Object.values(rawErrors).length ? rawErrors : null;
+      const issue = error.issues?.length ? error.issues[0]?.message : null;
+      throw new AppError(ErrorCode.VALIDATION, { error: errors || issue });
     }
 
     return true;
