@@ -1,6 +1,5 @@
+import { databaseConfig } from '@api-main/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
-
-import { databaseConfig } from '@libs/config';
 
 import * as schema from './schemas';
 

@@ -45,12 +45,6 @@
       "@libs/common/*": [
         "libs/common/*"
       ],
-      "@libs/config": [
-        "libs/config"
-      ],
-      "@libs/config/*": [
-        "libs/config/*"
-      ],
       "@libs/entities": [
         "libs/entities"
       ],

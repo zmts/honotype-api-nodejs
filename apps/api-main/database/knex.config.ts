@@ -1,6 +1,5 @@
+import { databaseConfig } from '@api-main/config';
 import { Knex } from 'knex';
-
-import { databaseConfig } from '@libs/config';
 
 export const knexConfig: Knex.Config = {
   client: 'pg',

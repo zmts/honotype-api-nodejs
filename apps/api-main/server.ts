@@ -1,10 +1,11 @@
-import { db } from '@api-main/database';
-import { controllers } from '@api-main/modules';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 
 import { globalExceptionHandler } from '@libs/common/api';
-import { appConfig } from '@libs/config';
+
+import { appConfig } from './config';
+import { db } from './database';
+import { controllers } from './modules';
 
 export async function server(): Promise<void> {
   const { rows } = await db.execute('select 1 + 1 as success');
@@ -16,10 +17,8 @@ export async function server(): Promise<void> {
 
   for (const ctl of controllers) {
     const controller = new ctl();
-    controller
-      .init()
-      .then((): Hono => app.route('/', controller.routes))
-      .catch();
+    await controller.init();
+    app.route('/', controller.routes);
   }
 
   app.onError(globalExceptionHandler);

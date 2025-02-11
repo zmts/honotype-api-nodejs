@@ -1,9 +1,8 @@
 import process from 'node:process';
 
-import { knexConfig } from '@api-main/database';
-
 import { migrationsRunner } from '@libs/core';
 
+import { knexConfig } from './database';
 import { server } from './server';
 
 async function start(): Promise<void> {
