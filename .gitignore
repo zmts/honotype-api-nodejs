@@ -40,6 +40,7 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
+.volumes
 
 # local docker store
 .persistence_store

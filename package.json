@@ -8,7 +8,7 @@
     "build": "tsc && tsc-alias",
     "lint": "eslint \"{apps,libs,test}/**/*.ts\"",
     "lint:fix": "eslint \"{apps,libs,test}/**/*.ts\" --fix",
-    "migrations:api-main": "npm run build && node dist/apps/api-main/main.js --migrations"
+    "migrations:api-main": "node dist/apps/api-main/main.js --migrations"
   },
   "dependencies": {
     "@hono/node-server": "1.13.8",

@@ -1,0 +1,68 @@
+services:
+  api_main:
+    container_name: api_main
+    depends_on:
+      postgres_host:
+        condition: service_healthy
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    networks:
+      - webnet
+    restart: always
+
+  postgres_host:
+    container_name: postgres_host
+    image: postgres:latest
+    restart: always
+    command: postgres -c 'max_connections=500'
+    volumes:
+      - ./.volumes/postgres/db-data:/var/lib/postgresql/data
+      - ./.volumes/postgres/db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_EXTENSIONS: citext,uuid-ossp
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - webnet
+
+  api_main_migrations:
+    container_name: api_main_migrations
+    depends_on:
+      postgres_host:
+        condition: service_healthy
+    build:
+      context: ./
+      dockerfile: Dockerfile.migrations
+    env_file:
+      - .env
+    networks:
+      - webnet
+    restart: no
+
+  redis_host:
+    container_name: redis_host
+    image: redis:5
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
