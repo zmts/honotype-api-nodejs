@@ -36,6 +36,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'unused-imports/no-unused-imports': 'error',
+    '@typescript-eslint/no-unused-vars': ['error', { caughtErrors: 'none' }],
     'import/order': [
       'error',
       {
