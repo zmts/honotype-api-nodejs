@@ -1,7 +1,7 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 
-import { globalExceptionHandler } from '@libs/common/api';
+import { globalExceptionHandler, routeNotFound } from '@libs/common/api';
 
 import { appConfig } from './config';
 import { db } from './database';
@@ -13,7 +13,7 @@ export async function server(): Promise<void> {
   console.log('Database connected successfully', rows);
   console.log('########################################\n');
 
-  const app = new Hono().basePath('api');
+  const app = new Hono({ strict: false }).basePath('api');
 
   for (const ctl of controllers) {
     const controller = new ctl();
@@ -21,6 +21,7 @@ export async function server(): Promise<void> {
     app.route('/', controller.routes);
   }
 
+  app.notFound(routeNotFound);
   app.onError(globalExceptionHandler);
 
   const { port, host } = appConfig;
