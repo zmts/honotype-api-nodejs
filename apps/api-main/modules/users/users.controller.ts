@@ -20,7 +20,7 @@ export class UsersController extends BaseController implements IBaseController {
   }
 
   init(): Promise<void> {
-    console.log(`${UsersController.name} started...`);
+    console.log(`${this.constructor.name} started...`);
     return Promise.resolve();
   }
 }

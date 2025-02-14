@@ -13,7 +13,7 @@ export class RootController extends BaseController implements IBaseController {
   }
 
   init(): Promise<void> {
-    console.log(`${RootController.name} started...`);
+    console.log(`${this.constructor.name} started...`);
     return Promise.resolve();
   }
 }

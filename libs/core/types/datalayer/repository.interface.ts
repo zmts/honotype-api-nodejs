@@ -6,8 +6,8 @@ export interface IRepository<Entity> {
   updateMany?(entity: Partial<Entity>[]): Promise<void>;
 
   find?(options?: { [key: string]: any }): Promise<Entity[]>;
-  findById?(id: number, options?: { [key: string]: any }): Promise<Entity | null>;
-  findByUuid?(uuid: string, options?: { [key: string]: any }): Promise<Entity | null>;
+  findOneById?(id: number, options?: { [key: string]: any }): Promise<Entity | null>;
+  findOneByUuid?(uuid: string, options?: { [key: string]: any }): Promise<Entity | null>;
 
   delete?(id: number): Promise<boolean>;
   deleteWhere?(id: number): Promise<void>;

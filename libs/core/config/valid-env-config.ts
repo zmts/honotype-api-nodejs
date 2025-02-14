@@ -21,6 +21,7 @@ export class ValidEnvConfig<T extends Record<string, any>> {
       if (envValue !== undefined) {
         if (validator instanceof z.ZodNumber) target = Number(envValue);
         if (validator instanceof z.ZodBoolean) target = Boolean(envValue);
+        if (validator instanceof z.ZodString && envValue.length === 0) target = defaultValue;
       } else {
         target = defaultValue;
       }
