@@ -53,6 +53,19 @@ export class UsersRepo implements IRepository<User> {
     }
   }
 
+  async findOrCreateByEmail(data: User): Promise<User> {
+    try {
+      let [result] = await db.select().from(user).where(eq(user.email, data.email)).limit(1);
+      if (!result) {
+        result = await this.create(data);
+      }
+
+      return new User(result);
+    } catch (error) {
+      throw new AppError(ErrorCode.DB, { error });
+    }
+  }
+
   async find(/*filter: { [p: string]: any }*/): Promise<User[]> {
     try {
       const result = await db.select().from(user);

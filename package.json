@@ -12,13 +12,14 @@
   },
   "dependencies": {
     "@hono/node-server": "1.13.8",
+    "@hono/oauth-providers": "0.6.2",
     "argon2": "0.41.1",
     "dotenv": "16.4.7",
     "drizzle-orm": "0.39.3",
-    "hono": "4.7.0",
+    "hono": "4.7.1",
     "jsonwebtoken": "9.0.2",
     "pg": "8.13.2",
-    "uuid": "^11.0.5",
+    "uuid": "11.0.5",
     "zod": "3.24.1"
   },
   "devDependencies": {
