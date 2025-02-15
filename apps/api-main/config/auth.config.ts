@@ -22,7 +22,7 @@ const config = new ValidEnvConfig({
   accessIssuer: { API_ACCESS_ISSUER: z.string(), default: 'api-main' },
   googleClientId: { GOOGLE_CLIENT_ID: z.string() },
   googleClientSecret: { GOOGLE_CLIENT_SECRET: z.string() },
-  frontRedirectURL: { GOOGLE_AUTH_FRONT_REDIRECT_URL: z.string() },
+  frontRedirectURL: { GOOGLE_AUTH_FRONT_REDIRECT_URL: z.string().url() },
 }).result();
 
 export const authConfig = new Config<AuthConfig>({
@@ -34,6 +34,6 @@ export const authConfig = new Config<AuthConfig>({
   google: {
     clientId: config.googleClientId,
     clientSecret: config.googleClientSecret,
-    frontRedirectURL: config.googleClientSecret,
+    frontRedirectURL: config.frontRedirectURL,
   },
 }).config();
