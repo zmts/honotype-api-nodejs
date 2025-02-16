@@ -1,10 +1,10 @@
 import { Hono, Context } from 'hono';
 
+import { getCurrentUserJwt } from '@libs/common/jwt';
 import { BaseController, IBaseController } from '@libs/core';
 
-import { CreateAction } from './actions';
-import { container } from './dependency';
-import { CreateDto } from './inout';
+import { GetCurrentUserAction } from './actions';
+import { dependency } from './dependency';
 
 export class UsersController extends BaseController implements IBaseController {
   constructor(private router = new Hono().basePath('users')) {
@@ -12,8 +12,8 @@ export class UsersController extends BaseController implements IBaseController {
   }
 
   get routes(): Hono {
-    this.router.post('/create', async (c: Context) =>
-      this.execute(c, new CreateAction(container).run(new CreateDto(await c.req.json()))),
+    this.router.get('/current', async (c: Context) =>
+      this.execute(c, new GetCurrentUserAction(dependency).run(getCurrentUserJwt(c))),
     );
 
     return this.router;

@@ -1,3 +1,4 @@
+import { globalDeps, initMiddleware } from '@api-main/global';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 
@@ -7,6 +8,10 @@ import { appConfig } from './config';
 import { db } from './database';
 import { controllers } from './modules';
 
+declare module 'hono' {
+  interface ContextVariableMap {}
+}
+
 export async function server(): Promise<void> {
   const { rows } = await db.execute('select 1 + 1 as success');
   console.log('########################################');
@@ -14,6 +19,8 @@ export async function server(): Promise<void> {
   console.log('########################################\n');
 
   const app = new Hono({ strict: false }).basePath('api');
+  app.use(initMiddleware);
+  app.use(globalDeps.jwtMiddleware.handler.bind(globalDeps.jwtMiddleware));
 
   for (const ctl of controllers) {
     const controller = new ctl();

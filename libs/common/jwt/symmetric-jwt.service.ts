@@ -1,4 +1,4 @@
-import { sign, verify, decode, Algorithm, JwtPayload, SignOptions } from 'jsonwebtoken';
+import { sign, verify, decode, Algorithm, JwtPayload, SignOptions, TokenExpiredError } from 'jsonwebtoken';
 
 import { AppError, ErrorCode } from '@libs/common/errors';
 
@@ -31,6 +31,9 @@ export class SymmetricJwtService {
     try {
       return verify(token, secret) as T;
     } catch (e) {
+      if (e instanceof TokenExpiredError && e.name === 'TokenExpiredError') {
+        throw new AppError(ErrorCode.TOKEN_VERIFY, { message: 'Token expired' });
+      }
       throw new AppError(ErrorCode.TOKEN_VERIFY);
     }
   }

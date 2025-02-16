@@ -2,7 +2,7 @@
   "name": "honotype",
   "author": "Sasha Zmts",
   "scripts": {
-    "start:dev:api-main": "npm run lint && tsx watch apps/api-main/main.ts",
+    "start:dev:api-main": "npm run lint && tsx watch apps/api-main/main.ts --no-cach",
     "start:prod:api-main": "node dist/apps/api-main/main.js",
     "prebuild": "rm -rf ./dist",
     "build": "tsc && tsc-alias",

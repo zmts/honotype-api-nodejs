@@ -10,8 +10,9 @@ export class UserResource extends Resource<UserContract> {
 
   result(): UserContract {
     return {
-      firstname: this.item.firstname,
-      lastname: this.item.lastname,
+      uuid: this.item?.uuid,
+      firstname: this.item?.firstname,
+      lastname: this.item?.lastname,
     };
   }
 }

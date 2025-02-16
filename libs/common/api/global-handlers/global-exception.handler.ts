@@ -20,9 +20,7 @@ export async function globalExceptionHandler(exception: Error, c: Context): Prom
   try {
     body = await request.json();
   } catch (e) {
-    responseError = createGenericError(e, { path: request.path });
-    c.status(responseError.status || 500);
-    return c.json(responseError);
+    body = {};
   }
 
   const reqPayload: IReqPayload = {
