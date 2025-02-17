@@ -16,18 +16,11 @@ export async function globalExceptionHandler(exception: Error, c: Context): Prom
   const request = c.req;
   let responseError: ApiResponseError<any>;
 
-  let body;
-  try {
-    body = await request.json();
-  } catch (e) {
-    body = {};
-  }
-
   const reqPayload: IReqPayload = {
     path: request.path,
     method: request.method,
     query: request.query(),
-    body,
+    body: await getReqBody(c),
     headers: request.header(),
   };
 
@@ -69,12 +62,12 @@ function createHTTPException(exception: HTTPException, { path }: { path: string 
   });
 }
 
-function createGenericError(exception: Error | unknown, { path }: { path: string }): ApiResponseError<any> {
+function createGenericError(exception: Error, { path }: { path: string }): ApiResponseError<any> {
   return new ApiResponseError({
     timestamp: new Date().toISOString(),
     path,
     status: 500,
-    message: 'Internal Server Error',
+    message: exception?.message?.includes('JSON') ? exception?.message : 'Internal Server Error',
   });
 }
 
@@ -86,4 +79,12 @@ function logError(exception: Error, reqPayload: IReqPayload): void {
     console.error(reqPayload);
     console.error(exception);
   }
+}
+
+async function getReqBody(c: Context): Promise<any> {
+  let body = {};
+  try {
+    body = await c.req.json();
+  } catch (e) {}
+  return body;
 }
