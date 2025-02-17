@@ -7,7 +7,7 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-CMD npm run start:prod:api-main
+CMD npm run start:api-main
 
 
 
