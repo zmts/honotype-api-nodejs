@@ -26,9 +26,11 @@ export class UsersRepo implements IRepository<User> {
     }
   }
 
-  async findOneById(id: number): Promise<User> {
+  async findOneById(id: number): Promise<any> {
     try {
-      const [result] = await db.select().from(user).where(eq(user.id, id)).limit(1);
+      const result = await db.query.user.findFirst({
+        where: (user, { eq }) => eq(user.id, id),
+      });
       return result ? new User(result) : null;
     } catch (error) {
       throw new AppError(ErrorCode.DB, { error });
