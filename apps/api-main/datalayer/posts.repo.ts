@@ -1,5 +1,4 @@
-import { db } from '@api-main/database';
-import { post } from '@api-main/database';
+import { db, post } from '@api-main/database';
 import { eq } from 'drizzle-orm';
 
 import { AppError, ErrorCode } from '@libs/common/errors';
