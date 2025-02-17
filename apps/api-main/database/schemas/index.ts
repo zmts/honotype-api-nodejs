@@ -1,1 +1,2 @@
-export { user } from './user.schema';
+export { user, userRelations } from './user.schema';
+export { post, postRelations } from './post.schema';

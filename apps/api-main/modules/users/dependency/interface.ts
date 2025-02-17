@@ -1,5 +1,5 @@
 import { UsersRepo } from '@api-main/datalayer';
 
-export interface IUsersDependency {
+export interface IDependency {
   usersRepo: UsersRepo;
 }
