@@ -67,7 +67,7 @@ export class UsersRepo implements IRepository<User> {
     }
   }
 
-  async find(/*filter: { [p: string]: any }*/): Promise<User[]> {
+  async findAll(/*filter: { [p: string]: any }*/): Promise<User[]> {
     try {
       const result = await db.select().from(user);
       return result.length ? result.map(i => new User(i)) : [];

@@ -13,7 +13,7 @@ export class ApiResponse<T = any> {
     readonly data: T,
     options?: IResponseOptions,
   ) {
-    this.data = this.data || null;
+    this.data = data || null;
     this.status = options?.status;
     this.cookies = options?.cookies || [];
     this.headers = options?.headers || {};

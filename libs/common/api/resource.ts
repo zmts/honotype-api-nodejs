@@ -1,6 +1,6 @@
 import { ApiResponse } from './api-response';
 import { ResourceList } from './resource-list';
-import { IResponseOptions } from './types/types';
+import { IResponseOptions } from './types';
 
 export abstract class Resource<Contract = any> {
   abstract result(): Contract;

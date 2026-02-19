@@ -1,6 +1,6 @@
 import { ApiResponse } from './api-response';
 import { Resource } from './resource';
-import { IPaginationResponse } from './types/types';
+import { IPaginationResponse } from './types';
 
 export class ResourceList<Contract> {
   private readonly list: any[];
@@ -13,8 +13,8 @@ export class ResourceList<Contract> {
     options?: { pagination?: IPaginationResponse; meta?: { [key: string]: any } },
   ) {
     this.list = list;
-    this.pagination = options.pagination;
-    this.meta = options.meta;
+    this.pagination = options?.pagination;
+    this.meta = options?.meta;
   }
 
   result(): Contract[] {

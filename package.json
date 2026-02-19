@@ -2,10 +2,11 @@
   "name": "honotype",
   "author": "Sasha Zmts",
   "scripts": {
-    "watch:api-main": "nodemon --exec 'npm run lint && tsx apps/api-main/main.ts'",
+    "watch:api-main": "nodemon --exec 'npm run lint && npm run typecheck && tsx apps/api-main/main.ts'",
     "start:api-main": "node dist/apps/api-main/main.js",
-    "prebuild": "rm -rf ./dist",
+    "prebuild": "npm run typecheck && rm -rf ./dist",
     "build": "tsc && tsc-alias",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint \"{apps,libs,test}/**/*.ts\"",
     "lint:fix": "eslint \"{apps,libs,test}/**/*.ts\" --fix",
     "migrations:api-main": "node dist/apps/api-main/main.js --migrations"

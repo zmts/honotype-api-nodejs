@@ -17,6 +17,10 @@ export class LoginAction extends BaseAction<[LoginDto], LoginResource> {
   async run(dto: LoginDto): Promise<LoginResource> {
     const user = await this.usersRepo.findOneByEmail(dto.email);
 
+    if (!user) {
+      throw new AppError(ErrorCode.INVALID_CREDENTIALS);
+    }
+
     const isValid = await User.checkPassword({ password: dto.password, hash: user.password });
     if (!isValid) {
       throw new AppError(ErrorCode.INVALID_CREDENTIALS);

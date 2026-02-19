@@ -1,7 +1,9 @@
-import { z, ZodType } from 'zod';
+import { ZodType } from 'zod';
 
 import { zodSchema } from '@libs/common/api';
 import { BaseValidator } from '@libs/core';
+
+import { schema } from './schema';
 
 export interface CreatePostDto {
   title: string;
@@ -11,8 +13,8 @@ export interface CreatePostDto {
 export class CreatePostDto extends BaseValidator<CreatePostDto> {
   protected schema(): ZodType {
     return zodSchema<CreatePostDto>({
-      title: z.string(),
-      description: z.string(),
+      title: schema.title,
+      description: schema.description.optional(),
     });
   }
 }

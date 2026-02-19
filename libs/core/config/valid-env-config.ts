@@ -6,7 +6,9 @@ dotenv.config();
 export class ValidEnvConfig<T extends Record<string, any>> {
   private config: Partial<T> = {};
 
-  constructor(schema: { [K in keyof T]: { [envVar: string]: ZodType<T[K]> } | { default?: T[K] } }) {
+  constructor(schema: {
+    [K in keyof T]: { [envVar: string]: ZodType<T[K]> } | { default?: T[K] };
+  }) {
     for (const [key, envMapping] of Object.entries(schema)) {
       const [[envName, validator]] = Object.entries(envMapping);
 

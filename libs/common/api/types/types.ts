@@ -13,6 +13,6 @@ export interface IResponseOptions {
 }
 
 export interface IPaginationResponse {
-  limit: number;
+  limit?: number;
   total: number;
 }
