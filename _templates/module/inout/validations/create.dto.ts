@@ -1,7 +1,9 @@
-import { z, ZodType } from 'zod';
+import { ZodType } from 'zod';
 
 import { zodSchema } from '@libs/common/api';
 import { BaseValidator } from '@libs/core';
+
+import { schema } from './schema';
 
 export interface CreateDto {
   name: string;
@@ -10,7 +12,7 @@ export interface CreateDto {
 export class CreateDto extends BaseValidator<CreateDto> {
   protected schema(): ZodType {
     return zodSchema<CreateDto>({
-      name: z.string(),
+      name: schema.name,
     });
   }
 }
