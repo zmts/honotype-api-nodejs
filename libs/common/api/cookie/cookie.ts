@@ -6,9 +6,9 @@ type CookieParams = CookieOptions & {
 };
 
 export class Cookie {
-  public readonly name: string;
-  public readonly value: string;
-  public readonly options: CookieOptions;
+  readonly name: string;
+  readonly value: string;
+  readonly options: CookieOptions;
 
   constructor({ name, value, maxAge, domain, path, httpOnly, signingSecret, secure, sameSite }: CookieParams) {
     this.name = name;
