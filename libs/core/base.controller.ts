@@ -1,6 +1,6 @@
 import { Context, TypedResponse } from 'hono';
 
-import { Resource, HttpStatus, IPaginationResponse, ResourceList } from '@libs/common/api';
+import { Resource, HttpStatus, IPaginationResponse, ResourceList, setCookies } from '@libs/common/api';
 
 interface IApiResponse<T> {
   status: HttpStatus;
@@ -19,7 +19,16 @@ export abstract class BaseController {
     const apiResponse = resource.toResponse();
     const isList = Array.isArray(apiResponse.data);
     const status = apiResponse.status || apiResponse.getStatus(c.req.method);
+
     c.status(status);
+    if (apiResponse.cookies?.length) {
+      setCookies(c, apiResponse.cookies);
+    }
+    if (Object.keys(apiResponse.headers || {}).length) {
+      for (const headerKey in apiResponse.headers) {
+        c.header(headerKey, apiResponse.headers[headerKey]);
+      }
+    }
 
     return c.json<IApiResponse<R>>({
       status,
