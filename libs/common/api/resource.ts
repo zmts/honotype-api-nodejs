@@ -4,7 +4,7 @@ import { IResponseOptions } from './types';
 
 export abstract class Resource<Contract = any> {
   abstract result(): Contract;
-  options?(): IResponseOptions;
+  abstract options(): IResponseOptions;
 
   protected setResult<Contract>(item: any, contract: new () => Contract): Contract {
     if (!item) return null;
@@ -21,6 +21,6 @@ export abstract class Resource<Contract = any> {
   }
 
   toResponse(): ApiResponse<Contract> {
-    return new ApiResponse(this.result(), this.options ? this.options() : {});
+    return new ApiResponse(this.result(), this.options());
   }
 }

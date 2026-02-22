@@ -1,1 +1,1 @@
-export * from './login.contract';
+export * from './auth.contract';

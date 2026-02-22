@@ -1,10 +1,17 @@
-import { Resource } from '@libs/common/api';
+import { IResponseOptions, Resource } from '@libs/common/api';
 
 import { ItemContract } from '../contracts';
 
 export class ItemResource extends Resource<ItemContract> {
-  constructor(private item: { name: string }) {
+  constructor(
+    private item: { name: string },
+    private responseOptions: IResponseOptions = {},
+  ) {
     super();
+  }
+
+  options(): IResponseOptions {
+    return this.responseOptions;
   }
 
   result(): ItemContract {

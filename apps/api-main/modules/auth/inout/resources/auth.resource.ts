@@ -1,11 +1,11 @@
 import { IResponseOptions, Resource } from '@libs/common/api';
 
-import { LoginContract } from '../contracts';
+import { AuthContract } from '../contracts';
 
-export class LoginResource extends Resource<LoginContract> {
+export class AuthResource extends Resource<AuthContract> {
   constructor(
     private item: { accessToken: string; refreshToken: string },
-    private responseOptions: IResponseOptions,
+    private responseOptions: IResponseOptions = {},
   ) {
     super();
   }
@@ -14,7 +14,7 @@ export class LoginResource extends Resource<LoginContract> {
     return this.responseOptions;
   }
 
-  result(): LoginContract {
+  result(): AuthContract {
     return {
       accessToken: this.item.accessToken,
       refreshToken: this.item.refreshToken,

@@ -13,7 +13,7 @@ export class GetCurrentUserAction extends BaseAction<[CurrentUserJwt], UserResou
   }
 
   async run(currentUser: CurrentUserJwt): Promise<UserResource> {
-    const user = await this.usersRepo.findOneById(currentUser.id);
+    const user = await this.usersRepo.findOne({ id: currentUser.id });
     return new UserResource(user);
   }
 }

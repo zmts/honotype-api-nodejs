@@ -56,3 +56,5 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 #
 TODO.md
+AGENTS.md
+/.old-api

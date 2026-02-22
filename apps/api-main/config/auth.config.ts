@@ -4,6 +4,9 @@ import { z } from 'zod';
 import { ValidEnvConfig, Config } from '@libs/core';
 
 export type AuthConfig = {
+  refreshToken: {
+    expiresIn: StringValue;
+  };
   accessToken: {
     secret: string;
     expiresIn: StringValue;
@@ -26,6 +29,9 @@ const config = new ValidEnvConfig({
 }).result();
 
 export const authConfig = new Config<AuthConfig>({
+  refreshToken: {
+    expiresIn: '7d',
+  },
   accessToken: {
     secret: config.accessTokenSecret,
     expiresIn: config.accessTokenExpiresIn as StringValue,

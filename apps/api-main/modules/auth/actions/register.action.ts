@@ -15,7 +15,7 @@ export class RegisterAction extends BaseAction<[RegisterDto], SuccessResource> {
   }
 
   async run(dto: RegisterDto): Promise<SuccessResource> {
-    const isExist = await this.usersRepo.findOneByEmail(dto.email);
+    const isExist = await this.usersRepo.findOne({ email: dto.email });
     if (isExist) {
       throw new AppError(ErrorCode.CONFLICT);
     }

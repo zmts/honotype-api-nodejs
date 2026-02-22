@@ -3,9 +3,9 @@ import { SocialProfile } from '@libs/core/auth';
 import { User } from '@libs/entities';
 
 import { IAuthDependency } from '../dependency';
-import { LoginResource } from '../inout';
+import { AuthResource } from '../inout';
 
-export class LoginGoogleAction extends BaseAction<[SocialProfile], LoginResource> {
+export class LoginGoogleAction extends BaseAction<[SocialProfile], AuthResource> {
   constructor(
     deps: IAuthDependency,
     private usersRepo = deps.usersRepo,
@@ -14,7 +14,7 @@ export class LoginGoogleAction extends BaseAction<[SocialProfile], LoginResource
     super();
   }
 
-  async run(profile: SocialProfile): Promise<LoginResource> {
+  async run(profile: SocialProfile): Promise<AuthResource> {
     const userModel = new User({
       email: profile.email,
       socialId: profile.id,
@@ -24,6 +24,6 @@ export class LoginGoogleAction extends BaseAction<[SocialProfile], LoginResource
     const user = await this.usersRepo.findOrCreateByEmail(userModel);
     const accessToken = this.jwtService.sigh({ id: user.id, uuid: user.uuid });
 
-    return new LoginResource({ accessToken });
+    return new AuthResource({ accessToken, refreshToken: '' }, { cookies: [] });
   }
 }
