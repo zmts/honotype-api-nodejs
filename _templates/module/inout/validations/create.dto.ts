@@ -10,7 +10,7 @@ export interface CreateDto {
 }
 
 export class CreateDto extends BaseValidator<CreateDto> {
-  protected schema(): ZodType {
+  protected schema(): ZodType<CreateDto> {
     return zodSchema<CreateDto>({
       name: schema.name,
     });

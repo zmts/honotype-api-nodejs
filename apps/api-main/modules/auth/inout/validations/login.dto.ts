@@ -12,7 +12,7 @@ export interface LoginDto {
 }
 
 export class LoginDto extends BaseValidator<LoginDto> {
-  protected schema(): ZodType {
+  protected schema(): ZodType<LoginDto> {
     return zodSchema<LoginDto>({
       email: schema.email,
       password: schema.password,

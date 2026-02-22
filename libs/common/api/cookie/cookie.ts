@@ -10,12 +10,11 @@ export class Cookie {
   readonly value: string;
   readonly options: CookieOptions;
 
-  constructor({ name, value, maxAge, domain, path, httpOnly, signingSecret, secure, sameSite }: CookieParams) {
+  constructor({ name, value, maxAge, domain, path, httpOnly, secure, sameSite }: CookieParams) {
     this.name = name;
     this.value = value;
     this.options = {
       ...(maxAge ? { maxAge } : {}),
-      ...(signingSecret ? { signingSecret } : {}),
       domain: domain ?? '',
       path: path ?? '/',
       httpOnly: httpOnly ?? true,

@@ -11,7 +11,7 @@ export interface RefreshTokenDto {
 }
 
 export class RefreshTokenDto extends BaseValidator<RefreshTokenDto> {
-  protected schema(): ZodType {
+  protected schema(): ZodType<RefreshTokenDto> {
     return zodSchema<RefreshTokenDto>({
       refreshToken: schema.refreshToken,
       fingerprint: schema.fingerprint,

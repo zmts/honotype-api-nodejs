@@ -11,7 +11,7 @@ export interface RegisterDto {
 }
 
 export class RegisterDto extends BaseValidator<RegisterDto> {
-  protected schema(): ZodType {
+  protected schema(): ZodType<RegisterDto> {
     return zodSchema<RegisterDto>({
       email: schema.email,
       password: schema.password,

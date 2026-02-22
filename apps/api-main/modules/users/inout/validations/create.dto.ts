@@ -5,12 +5,12 @@ import { BaseValidator } from '@libs/core';
 
 export interface CreateDto {
   email: string;
-  firstname: string;
-  lastname: string;
+  firstname?: string;
+  lastname?: string;
 }
 
 export class CreateDto extends BaseValidator<CreateDto> {
-  protected schema(): ZodType {
+  protected schema(): ZodType<CreateDto> {
     return zodSchema<CreateDto>({
       email: z.string().email(),
       firstname: z.string().min(3).max(500).optional(),
