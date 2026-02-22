@@ -1,5 +1,5 @@
 import { db, post } from '@api-main/database';
-import { and, count, eq, SQL } from 'drizzle-orm';
+import { and, count, eq, or, SQL } from 'drizzle-orm';
 
 import { uuid7 } from '@libs/common/utils';
 import { IFindOptions, IPageResult, IRepository } from '@libs/core';
@@ -27,22 +27,10 @@ export class PostsRepo extends BaseRepo implements IRepository<Post> {
     }
   }
 
-  async findOneById(id: number): Promise<any> {
+  async findOne(filter: Partial<Pick<Post, 'id' | 'uuid' | 'userId' | 'title' | 'description'>>): Promise<Post | null> {
     try {
-      const result = await db.query.post.findFirst({
-        where: (post, { eq }) => eq(post.id, id),
-      });
-      return result ? new Post(result) : null;
-    } catch (error) {
-      throw this.handleDbError(error);
-    }
-  }
-
-  async findOneByUuid(uuid: string): Promise<Post> {
-    try {
-      const result = await db.query.post.findFirst({
-        where: (post, { eq }) => eq(post.uuid, uuid),
-      });
+      const where = this.buildWhere(filter);
+      const [result] = await db.select().from(post).where(where).limit(1);
       return result ? new Post(result) : null;
     } catch (error) {
       throw this.handleDbError(error);
@@ -85,20 +73,26 @@ export class PostsRepo extends BaseRepo implements IRepository<Post> {
     }
   }
 
-  private buildWhere(filter?: Partial<Post>): SQL<unknown> | undefined {
+  private buildWhere(filter?: Partial<Post>, operator: 'and' | 'or' = 'and'): SQL<unknown> | undefined {
+    const op = operator === 'and' ? and : or;
     const conditions: SQL<unknown>[] = [];
+
+    if (typeof filter?.id) {
+      conditions.push(eq(post.id, filter.id));
+    }
+    if (filter?.uuid) {
+      conditions.push(eq(post.uuid, filter.uuid));
+    }
     if (typeof filter?.userId) {
       conditions.push(eq(post.userId, filter.userId));
     }
     if (filter?.title) {
       conditions.push(eq(post.title, filter.title));
     }
-    if (filter?.uuid) {
-      conditions.push(eq(post.uuid, filter.uuid));
-    }
     if (filter?.description) {
       conditions.push(eq(post.description, filter.description));
     }
-    return conditions.length ? and(...conditions) : undefined;
+
+    return conditions.length ? op(...conditions) : undefined;
   }
 }

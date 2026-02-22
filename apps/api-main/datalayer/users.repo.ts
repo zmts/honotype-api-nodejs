@@ -1,19 +1,19 @@
 import { db, user } from '@api-main/database';
-import { eq } from 'drizzle-orm';
+import { BaseRepo } from '@api-main/datalayer/base.repo';
+import { and, eq, or, SQL } from 'drizzle-orm';
 
-import { AppError, ErrorCode } from '@libs/common/errors';
 import { uuid7 } from '@libs/common/utils';
-import { IRepository } from '@libs/core';
-import { User } from '@libs/entities';
+import { IFindOptions, IRepository } from '@libs/core';
+import { Post, User } from '@libs/entities';
 
-export class UsersRepo implements IRepository<User> {
+export class UsersRepo extends BaseRepo implements IRepository<User> {
   async create(data: User): Promise<User> {
     try {
       data.uuid = uuid7();
       const [result] = await db.insert(user).values(data).returning();
       return new User(result);
     } catch (error) {
-      throw new AppError(ErrorCode.DB, { error });
+      throw this.handleDbError(error);
     }
   }
   async update(entity: Partial<User>): Promise<User> {
@@ -21,36 +21,17 @@ export class UsersRepo implements IRepository<User> {
       const [result] = await db.update(user).set(entity).where(eq(user.id, entity.id)).returning();
       return new User(result);
     } catch (error) {
-      throw new AppError(ErrorCode.DB, { error });
+      throw this.handleDbError(error);
     }
   }
 
-  async findOneById(id: number): Promise<any> {
+  async findOne(filter: Partial<Pick<User, 'id' | 'uuid' | 'email'>>): Promise<User | null> {
     try {
-      const result = await db.query.user.findFirst({
-        where: (user, { eq }) => eq(user.id, id),
-      });
+      const where = this.buildWhere(filter);
+      const [result] = await db.select().from(user).where(where).limit(1);
       return result ? new User(result) : null;
     } catch (error) {
-      throw new AppError(ErrorCode.DB, { error });
-    }
-  }
-
-  async findOneByUuid(uuid: string): Promise<User> {
-    try {
-      const [result] = await db.select().from(user).where(eq(user.uuid, uuid)).limit(1);
-      return result ? new User(result) : null;
-    } catch (error) {
-      throw new AppError(ErrorCode.DB, { error });
-    }
-  }
-
-  async findOneByEmail(email: string): Promise<User> {
-    try {
-      const [result] = await db.select().from(user).where(eq(user.email, email)).limit(1);
-      return result ? new User(result) : null;
-    } catch (error) {
-      throw new AppError(ErrorCode.DB, { error });
+      throw this.handleDbError(error);
     }
   }
 
@@ -63,16 +44,35 @@ export class UsersRepo implements IRepository<User> {
 
       return new User(result);
     } catch (error) {
-      throw new AppError(ErrorCode.DB, { error });
+      throw this.handleDbError(error);
     }
   }
 
-  async findAll(/*filter: { [p: string]: any }*/): Promise<User[]> {
+  async findAll(options: Omit<IFindOptions<User>, 'pagination'>): Promise<User[]> {
+    const { filter } = this.findOptions<Post>(options);
     try {
-      const result = await db.select().from(user);
+      const where = this.buildWhere(filter);
+      const result = where ? await db.select().from(user).where(where) : await db.select().from(user);
       return result.length ? result.map(i => new User(i)) : [];
     } catch (error) {
-      throw new AppError(ErrorCode.DB, { error });
+      throw this.handleDbError(error);
     }
+  }
+
+  private buildWhere(filter?: Partial<User>, operator: 'and' | 'or' = 'and'): SQL<unknown> | undefined {
+    const op = operator === 'and' ? and : or;
+    const conditions: SQL<unknown>[] = [];
+
+    if (filter?.id) {
+      conditions.push(eq(user.id, filter.id));
+    }
+    if (filter?.uuid) {
+      conditions.push(eq(user.uuid, filter.uuid));
+    }
+    if (filter?.email) {
+      conditions.push(eq(user.email, filter.email));
+    }
+
+    return conditions.length ? op(...conditions) : undefined;
   }
 }
