@@ -1,4 +1,4 @@
-import { AuthConfig } from '@api-main/config';
+import { AuthConfigType } from '@api-main/config';
 import { RefreshSessionsRepo, UsersRepo } from '@api-main/datalayer';
 
 import { SymmetricJwtService } from '@libs/common/jwt';
@@ -9,6 +9,6 @@ export interface IAuthDependency {
   usersRepo: UsersRepo;
   refreshSessionsRepo: RefreshSessionsRepo;
   jwtService: SymmetricJwtService;
-  authConfig: AuthConfig;
+  authConfig: AuthConfigType;
   authService: AuthService;
 }
