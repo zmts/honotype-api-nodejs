@@ -10,20 +10,14 @@ const config = new ValidEnvConfig({
   username: { DB_USERNAME: z.string() },
 }).result();
 
-export type DatabaseConfig = {
-  host: string;
-  port: number;
-  password: string;
-  name: string;
-  username: string;
-  maxConnections: number;
-};
-
-export const databaseConfig = new Config<DatabaseConfig>({
+const configData = {
   host: config.host,
   port: config.port,
   password: config.password,
   name: config.name,
   username: config.username,
   maxConnections: 300,
-}).config();
+};
+
+export type DatabaseConfigType = typeof configData;
+export const databaseConfig = new Config<DatabaseConfigType>(configData).config();

@@ -3,22 +3,6 @@ import { z } from 'zod';
 
 import { ValidEnvConfig, Config } from '@libs/core';
 
-export type AuthConfig = {
-  refreshToken: {
-    expiresIn: StringValue;
-  };
-  accessToken: {
-    secret: string;
-    expiresIn: StringValue;
-    issuer?: string;
-  };
-  google: {
-    clientId: string;
-    clientSecret: string;
-    frontRedirectURL: string;
-  };
-};
-
 const config = new ValidEnvConfig({
   accessTokenSecret: { API_ACCESS_TOKEN_SECRET: z.string() },
   accessTokenExpiresIn: { API_ACCESS_EXP: z.string(), default: '1d' },
@@ -28,9 +12,9 @@ const config = new ValidEnvConfig({
   frontRedirectURL: { GOOGLE_AUTH_FRONT_REDIRECT_URL: z.string().url() },
 }).result();
 
-export const authConfig = new Config<AuthConfig>({
+const configData = {
   refreshToken: {
-    expiresIn: '7d',
+    expiresIn: '7d' as StringValue,
   },
   accessToken: {
     secret: config.accessTokenSecret,
@@ -42,4 +26,7 @@ export const authConfig = new Config<AuthConfig>({
     clientSecret: config.googleClientSecret,
     frontRedirectURL: config.frontRedirectURL,
   },
-}).config();
+};
+
+export type AuthConfigType = typeof configData;
+export const authConfig = new Config<AuthConfigType>(configData).config();
