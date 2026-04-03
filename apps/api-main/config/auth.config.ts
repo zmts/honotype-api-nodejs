@@ -9,7 +9,7 @@ const config = new ValidEnvConfig({
   accessIssuer: { API_ACCESS_ISSUER: z.string(), default: 'api-main' },
   googleClientId: { GOOGLE_CLIENT_ID: z.string() },
   googleClientSecret: { GOOGLE_CLIENT_SECRET: z.string() },
-  frontRedirectURL: { GOOGLE_AUTH_FRONT_REDIRECT_URL: z.string().url() },
+  frontRedirectURL: { GOOGLE_AUTH_FRONT_REDIRECT_URL: z.url() },
 }).result();
 
 const configData = {
