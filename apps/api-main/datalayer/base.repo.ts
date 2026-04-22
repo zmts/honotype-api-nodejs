@@ -1,5 +1,5 @@
-import { AppError, ErrorCode } from '@libs/common/errors';
-import { IFindOptions, IPageResult, SortDirection } from '@libs/core/types';
+import { AppError, ErrorCode } from '@libs/core';
+import { IFindOptions, IPageResult, SortDirection } from '@libs/core';
 
 export abstract class BaseRepo {
   protected handleDbError(error: any): AppError {

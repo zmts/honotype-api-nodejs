@@ -1,5 +1,5 @@
-import { ResourceList } from '@libs/common/api';
-import { CurrentUserJwt } from '@libs/common/jwt';
+import { ResourceList } from '@libs/core';
+import { CurrentUserJwt } from '@libs/core';
 import { BaseAction } from '@libs/core';
 
 import { IDependency } from '../dependency';

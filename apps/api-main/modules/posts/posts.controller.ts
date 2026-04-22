@@ -1,6 +1,6 @@
 import { Hono, Context } from 'hono';
 
-import { getCurrentUserJwt } from '@libs/common/jwt';
+import { getCurrentUserJwt } from '@libs/core';
 import { BaseController, IBaseController } from '@libs/core';
 
 import { CreatePostAction, ListPostsAction } from './actions';

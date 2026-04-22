@@ -1,7 +1,7 @@
 import { AuthConfigType } from '@api-main/config';
 import { RefreshSessionsRepo, UsersRepo } from '@api-main/datalayer';
 
-import { SymmetricJwtService } from '@libs/common/jwt';
+import { SymmetricJwtService } from '@libs/core';
 
 import { AuthService } from '../services';
 

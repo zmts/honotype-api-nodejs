@@ -1,4 +1,4 @@
-import { IResponseOptions, Resource } from '@libs/common/api';
+import { IResponseOptions, Resource } from '@libs/core';
 
 import { ItemContract } from '../contracts';
 

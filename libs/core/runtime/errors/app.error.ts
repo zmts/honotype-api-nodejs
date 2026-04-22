@@ -1,4 +1,4 @@
-import { HttpStatus } from '@libs/common/api';
+import { HttpStatus } from '@libs/core';
 
 export enum ErrorCode {
   SERVER = 'SERVER',

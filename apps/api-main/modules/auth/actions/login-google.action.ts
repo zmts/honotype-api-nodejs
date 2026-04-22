@@ -1,5 +1,5 @@
 import { BaseAction } from '@libs/core';
-import { SocialProfile } from '@libs/core/auth';
+import { SocialProfile } from '@libs/core';
 import { User } from '@libs/entities';
 
 import { IAuthDependency } from '../dependency';

@@ -1,7 +1,7 @@
 import { Context, HonoRequest } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 
-import { ApiResponseError, AppError } from '@libs/common/errors';
+import { ApiResponseError, AppError } from '@libs/core';
 
 interface IReqPayload {
   path: HonoRequest['path'];
@@ -41,7 +41,7 @@ function createAppError(exception: AppError, { path }: { path: string }): ApiRes
   const { message, code, entity, description, meta, error } = exception;
 
   return new ApiResponseError({
-    timestamp: new Date().toISOString(),
+    timestampIso: new Date().toISOString(),
     path,
     status: exception.status,
     code,
@@ -55,7 +55,7 @@ function createAppError(exception: AppError, { path }: { path: string }): ApiRes
 
 function createHTTPException(exception: HTTPException, { path }: { path: string }): ApiResponseError<any> {
   return new ApiResponseError({
-    timestamp: new Date().toISOString(),
+    timestampIso: new Date().toISOString(),
     path,
     status: exception.status,
     message: exception.message,
@@ -64,7 +64,7 @@ function createHTTPException(exception: HTTPException, { path }: { path: string 
 
 function createGenericError(exception: Error, { path }: { path: string }): ApiResponseError<any> {
   return new ApiResponseError({
-    timestamp: new Date().toISOString(),
+    timestampIso: new Date().toISOString(),
     path,
     status: 500,
     message: exception?.message?.includes('JSON') ? exception?.message : 'Internal Server Error',

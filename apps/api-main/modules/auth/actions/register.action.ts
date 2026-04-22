@@ -1,7 +1,7 @@
-import { AppError, ErrorCode } from '@libs/common/errors';
+import { SuccessResource } from '@libs/common/inout';
+import { AppError, ErrorCode } from '@libs/core';
 import { BaseAction } from '@libs/core';
 import { User } from '@libs/entities';
-import { SuccessResource } from '@libs/shared/inout';
 
 import { IAuthDependency } from '../dependency';
 import { RegisterDto } from '../inout';

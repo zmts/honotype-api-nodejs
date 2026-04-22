@@ -3,8 +3,13 @@ import { googleAuth } from '@hono/oauth-providers/google';
 import { Hono, Context } from 'hono';
 import { getCookie } from 'hono/cookie';
 
-import { BaseController, IBaseController } from '@libs/core';
-import { getGoogleProfile, GoogleAuthProfile, googleAuthDefaultOptions } from '@libs/core/auth/google';
+import {
+  BaseController,
+  IBaseController,
+  getGoogleProfile,
+  GoogleAuthProfile,
+  googleAuthDefaultOptions,
+} from '@libs/core';
 
 import { LoginAction, LoginGoogleAction, RefreshTokensAction, RegisterAction } from './actions';
 import { dependency } from './dependency';

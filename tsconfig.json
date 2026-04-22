@@ -50,12 +50,6 @@
       ],
       "@libs/entities/*": [
         "libs/entities/*"
-      ],
-      "@libs/shared": [
-        "libs/shared"
-      ],
-      "@libs/shared/*": [
-        "libs/shared/*"
       ]
     }
   },

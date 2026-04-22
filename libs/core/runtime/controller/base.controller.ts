@@ -1,6 +1,6 @@
 import { Context, TypedResponse } from 'hono';
 
-import { Resource, HttpStatus, IPaginationResponse, ResourceList, setCookies } from '@libs/common/api';
+import { Resource, HttpStatus, IPaginationResponse, ResourceList, setCookies } from '@libs/core';
 
 interface IApiResponse<T> {
   status: HttpStatus;

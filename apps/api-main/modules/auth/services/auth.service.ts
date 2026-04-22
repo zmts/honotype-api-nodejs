@@ -1,6 +1,6 @@
 import ms from 'ms';
 
-import { AppError, ErrorCode } from '@libs/common/errors';
+import { AppError, ErrorCode } from '@libs/core';
 import { RefreshSession } from '@libs/entities';
 
 import { IAuthDependency } from '../dependency';
@@ -14,23 +14,23 @@ export class AuthService {
     private refreshSessionsRepo = deps.refreshSessionsRepo,
   ) {}
 
-  getRefreshTokenTimeIntervals(): { expiresInMs: number; cookieMaxAgeSec: number } {
-    const intervalMs = ms(this.authConfig.refreshToken.expiresIn);
-    const expiresInMs = Date.now() + intervalMs;
-    return { expiresInMs, cookieMaxAgeSec: Math.floor(intervalMs / 1000) };
+  getRefreshTokenTimeIntervals(): { expiresAtMs: number; cookieMaxAgeSec: number } {
+    const expiringPeriodMs = ms(this.authConfig.refreshToken.expiringPeriod);
+    const expiresAtMs = Date.now() + expiringPeriodMs;
+    return { expiresAtMs, cookieMaxAgeSec: Math.floor(expiringPeriodMs / 1000) };
   }
 
   buildRefreshSessionEntity(params: {
     userId: number;
     fingerprint: string;
-    expiresIn: number;
+    expiresAtMs: number;
     ip?: string;
     ua?: string | null;
   }): RefreshSession {
     const model = new RefreshSession({
       userId: params.userId,
       fingerprint: params.fingerprint,
-      expiresIn: params.expiresIn,
+      expiresAtMs: params.expiresAtMs,
       ip: params.ip ?? null,
       ua: params.ua ?? null,
     });
@@ -46,8 +46,8 @@ export class AuthService {
   }
 
   verifyRefreshSession(oldRefreshSession: RefreshSession, newFingerprint: string): void {
-    const nowTime = new Date().getTime();
-    if (nowTime > oldRefreshSession.expiresIn) {
+    const nowTimeMs = new Date().getTime();
+    if (nowTimeMs > oldRefreshSession.expiresAtMs) {
       throw new AppError(ErrorCode.SESSION_EXPIRED);
     }
     // if (oldIp !== newIp) {

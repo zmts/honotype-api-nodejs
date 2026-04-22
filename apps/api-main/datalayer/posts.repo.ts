@@ -1,7 +1,7 @@
 import { db, post } from '@api-main/database';
 import { and, count, eq, or, SQL } from 'drizzle-orm';
 
-import { uuid7 } from '@libs/common/utils';
+import { uuid7 } from '@libs/core';
 import { IFindOptions, IPageResult, IRepository } from '@libs/core';
 import { Post } from '@libs/entities';
 

@@ -1,8 +1,9 @@
 import { globalDeps, initMiddleware } from '@api-main/global';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 
-import { globalExceptionHandler, routeNotFound } from '@libs/common/api';
+import { globalExceptionHandler, routeNotFound } from '@libs/core';
 
 import { appConfig } from './config';
 import { db } from './database';
@@ -18,8 +19,18 @@ export async function server(): Promise<void> {
   console.log('Database connected successfully', rows);
   console.log('########################################\n');
 
-  const app = new Hono({ strict: false }).basePath('api');
+  const app = new Hono({ strict: false }).basePath('/api');
   app.use(initMiddleware);
+  app.use(
+    '*',
+    cors({
+      origin: ['http://localhost:3000'], // SPA url
+      allowHeaders: ['Content-Type', 'Authorization'],
+      allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      credentials: true,
+    }),
+  );
+
   app.use(globalDeps.jwtMiddleware.handler.bind(globalDeps.jwtMiddleware));
 
   for (const ctl of controllers) {

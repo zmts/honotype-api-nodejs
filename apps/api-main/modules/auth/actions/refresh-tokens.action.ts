@@ -1,5 +1,5 @@
-import { Cookie } from '@libs/common/api';
-import { SymmetricJwtService } from '@libs/common/jwt';
+import { Cookie } from '@libs/core';
+import { SymmetricJwtService } from '@libs/core';
 import { BaseAction } from '@libs/core';
 
 import { IAuthDependency } from '../dependency';
@@ -25,11 +25,11 @@ export class RefreshTokensAction extends BaseAction<[RefreshTokenDto], AuthResou
 
     const user = await this.usersRepo.findOne({ id: oldRefreshSession.userId });
 
-    const { expiresInMs, cookieMaxAgeSec } = this.authService.getRefreshTokenTimeIntervals();
+    const { expiresAtMs, cookieMaxAgeSec } = this.authService.getRefreshTokenTimeIntervals();
     const newRefSessionEntity = this.authService.buildRefreshSessionEntity({
       userId: user.id,
       fingerprint,
-      expiresIn: expiresInMs,
+      expiresAtMs,
     });
 
     await this.authService.addRefreshSession(newRefSessionEntity);

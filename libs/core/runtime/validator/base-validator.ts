@@ -1,6 +1,6 @@
 import { ZodType } from 'zod';
 
-import { AppError, ErrorCode } from '@libs/common/errors';
+import { AppError, ErrorCode } from '@libs/core';
 
 type ExcludeBaseKeys<T> = Omit<T, 'schema' | 'target' | 'validate'>;
 

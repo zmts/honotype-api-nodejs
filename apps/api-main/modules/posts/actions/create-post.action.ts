@@ -1,4 +1,4 @@
-import { CurrentUserJwt } from '@libs/common/jwt';
+import { CurrentUserJwt } from '@libs/core';
 import { BaseAction } from '@libs/core';
 import { Post } from '@libs/entities';
 

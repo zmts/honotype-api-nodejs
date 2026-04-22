@@ -1,6 +1,6 @@
 import { Context } from 'hono';
 
-import { AppError, ErrorCode } from '@libs/common/errors';
+import { AppError, ErrorCode } from '@libs/core';
 
 import { CURRENT_USER } from './constants';
 

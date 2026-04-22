@@ -1,4 +1,4 @@
-import { UserId } from '@libs/common/types/global';
+import { UserId } from '@libs/core';
 
 import { BaseEntity } from './base.entity';
 

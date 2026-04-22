@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 
-import { UserId, UserUuid } from '@libs/common/types/global';
+import { UserId, UserUuid } from '@libs/core';
 
 import { BaseEntity } from './base.entity';
 

@@ -2,7 +2,7 @@ import { db, user } from '@api-main/database';
 import { BaseRepo } from '@api-main/datalayer/base.repo';
 import { and, eq, or, SQL } from 'drizzle-orm';
 
-import { uuid7 } from '@libs/common/utils';
+import { uuid7 } from '@libs/core';
 import { IFindOptions, IRepository } from '@libs/core';
 import { Post, User } from '@libs/entities';
 

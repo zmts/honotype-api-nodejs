@@ -5,6 +5,12 @@
 - Runtime stack: **Node.js, Hono, PostgreSQL, Drizzle ORM, Knex migrations, Zod**
 - Архитектурный стиль: **модульный API server с собственным lightweight framework поверх Hono**
 
+## Code Quality Rules For Codex
+
+- При работе в этом репозитории обязательно соблюдай правила из [`CODE_QUALITY.md`](.ai/CODE_QUALITY.md).
+- `CODE_QUALITY.md` является источником правды для code quality, naming, style и общих правил написания кода для Codex в этом workspace.
+- Не дублируй code quality rules в этом файле: `AGENTS.md` описывает архитектуру, слои, flow и проектные ограничения, а `CODE_QUALITY.md` — правила качества кода.
+
 ## Что это за проект по архитектуре
 
 `honotype-api-nodejs` не использует NestJS-подобный framework layer с декораторами и DI-контейнером как основу приложения.
@@ -15,7 +21,8 @@
 - каждый бизнес-модуль живет в собственной папке и имеет явный набор зависимостей;
 - вход и выход из системы типизированы через DTO, contracts и resources;
 - доступ к данным вынесен в отдельный repository layer;
-- общие cross-cutting concerns лежат в `libs/common` и `libs/core`.
+- framework/runtime primitives и cross-cutting concerns лежат в `libs/core`;
+- общие `inout`-артефакты лежат в `libs/common`.
 
 Это делает код явным, предсказуемым и удобным для небольшого/среднего backend-проекта без тяжелой магии framework-а.
 
@@ -40,13 +47,11 @@
 - `apps/api-main/modules`
   бизнес-модули API
 - `libs/core`
-  базовые абстракции без бизнес-логики
+  kernel/runtime building blocks без доменной логики
 - `libs/common`
-  общие API/helpers/errors/jwt и другие прикладные shared-компоненты
+  общие `inout` contracts/resources, которые можно переиспользовать между модулями
 - `libs/entities`
   доменные сущности
-- `libs/shared`
-  переиспользуемые contracts/resources для нескольких модулей
 
 ## Основные паттерны и шаблоны проекта
 
@@ -55,10 +60,9 @@
 Базовый structural pattern проекта:
 
 - `apps/*` содержит runnable application;
-- `libs/core` содержит framework-like building blocks без доменной логики;
-- `libs/common` содержит reusable application-level primitives;
+- `libs/core` содержит kernel/runtime building blocks без доменной логики;
+- `libs/common` содержит общие `inout` contracts/resources;
 - `libs/entities` содержит доменные сущности;
-- `libs/shared` содержит общие in/out артефакты;
 - alias imports через `tsconfig.json` используются как обязательная практика.
 
 Это означает, что новый код нужно класть не “по технологическому вкусу”, а по слою ответственности.
@@ -108,7 +112,7 @@
 
 ### 5. BaseController как единая точка HTTP-ответа
 
-`libs/core/base.controller.ts` реализует шаблон стандартизованного API response:
+`libs/core/runtime/controller/base.controller.ts` реализует шаблон стандартизованного API response:
 
 - action возвращает `Resource`/`ResourceList`;
 - `BaseController.execute(...)` превращает это в единый JSON-ответ;
@@ -258,7 +262,7 @@ Data access вынесен в `apps/api-main/datalayer`.
 
 ### 13. Global Error Handler и единый error response
 
-`libs/common/api/global-handlers/global-exception.handler.ts` реализует транспортный шаблон ошибок:
+`libs/core/runtime/api/global-handlers/global-exception.handler.ts` реализует транспортный шаблон ошибок:
 
 - собирает request context;
 - различает `AppError`, `HTTPException` и generic error;
@@ -364,9 +368,28 @@ Data access вынесен в `apps/api-main/datalayer`.
 
 Для новых модулей этот интерфейс нужно сохранять, даже если инициализация пока тривиальна.
 
+## Актуальная структура приложения
+
+- bootstrap entrypoint: `apps/api-main/main.ts`
+- HTTP server composition root: `apps/api-main/server.ts`
+- runtime DB + schemas + migrations: `apps/api-main/database/*`
+- repositories: `apps/api-main/datalayer/*`
+- global middleware/deps: `apps/api-main/global/*`
+- business modules: `apps/api-main/modules/*`
+- reusable runtime/framework layer: `libs/core/*`
+- shared inout resources/contracts: `libs/common/inout/*`
+- domain entities: `libs/entities/*`
+
+## Актуальные модули
+
+- `root` — базовый ping endpoint
+- `auth` — регистрация, login, refresh-tokens, Google OAuth flow
+- `users` — current user endpoint
+- `posts` — list/create posts
+
 ## Канонический шаблон нового HTTP-модуля
 
-Если проектировать новый модуль в стиле `lpk-trd-server`, ориентируйся на такую последовательность:
+Если проектировать новый модуль в текущем стиле репозитория, ориентируйся на такую последовательность:
 
 1. Создать папку `apps/api-main/modules/<module-name>`.
 2. Добавить `<module>.controller.ts`.
@@ -424,14 +447,13 @@ Data access вынесен в `apps/api-main/datalayer`.
 
 - Источник правды по модульному шаблону: `_templates/module` и модули `posts`, `users`, `auth`.
 - Источник правды по API bootstrap: `apps/api-main/main.ts` и `apps/api-main/server.ts`.
-- Источник правды по response/error patterns: `libs/common/api/*` и `libs/common/errors/*`.
-- Источник правды по config pattern: `apps/api-main/config/*` и `libs/core/config/*`.
+- Источник правды по response/error patterns: `libs/core/runtime/api/*` и `libs/core/runtime/errors/*`.
+- Источник правды по config pattern: `apps/api-main/config/*`, `libs/core/kernel/config/*` и `libs/core/runtime/config/*`.
 - Источник правды по data access pattern: `apps/api-main/datalayer/*` и `apps/api-main/database/*`.
 
-## Правила
+## Локальные проектные ограничения
 
-- Не использовать `any`, только в крайних случаях и явно понимать границу небезопасного значения.
-- Для нового кода сохранять pattern: `controller -> action -> repo/service -> resource`.
-- Для новых модулей использовать `_templates/module` как базовый scaffold.
-- Не читать `process.env` напрямую вне config layer.
-- Не формировать API response вручную, если можно использовать `Resource` и `BaseController.execute(...)`.
+- Для нового кода сохраняй pattern: `controller -> action -> repo/service -> resource`.
+- Для новых модулей используй `_templates/module` как базовый scaffold.
+- Не читай `process.env` напрямую вне config layer.
+- Не формируй API response вручную, если можно использовать `Resource` и `BaseController.execute(...)`.

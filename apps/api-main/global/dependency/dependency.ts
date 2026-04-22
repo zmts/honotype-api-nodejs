@@ -1,6 +1,6 @@
 import { authConfig } from '@api-main/config';
 
-import { JwtMiddleware, SymmetricJwtService } from '@libs/common/jwt';
+import { JwtMiddleware, SymmetricJwtService } from '@libs/core';
 
 interface IGlobalDependency {
   jwtService: SymmetricJwtService;
@@ -9,7 +9,7 @@ interface IGlobalDependency {
 
 const jwtService = new SymmetricJwtService({
   secret: authConfig.accessToken.secret,
-  expiresIn: authConfig.accessToken.expiresIn,
+  expiresIn: authConfig.accessToken.expiringPeriod,
   issuer: authConfig.accessToken.issuer,
 });
 

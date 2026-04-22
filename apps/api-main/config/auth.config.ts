@@ -14,11 +14,11 @@ const config = new ValidEnvConfig({
 
 const configData = {
   refreshToken: {
-    expiresIn: '7d' as StringValue,
+    expiringPeriod: '7d' as StringValue,
   },
   accessToken: {
     secret: config.accessTokenSecret,
-    expiresIn: config.accessTokenExpiresIn as StringValue,
+    expiringPeriod: config.accessTokenExpiresIn as StringValue,
     issuer: config.accessIssuer,
   },
   google: {

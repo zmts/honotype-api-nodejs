@@ -1,6 +1,6 @@
 import { ZodType } from 'zod';
 
-import { zodSchema } from '@libs/common/api';
+import { zodSchema } from '@libs/core';
 import { BaseValidator } from '@libs/core';
 
 import { schema } from './schema';

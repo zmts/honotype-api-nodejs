@@ -1,5 +1,5 @@
-import { UserId } from '@libs/common/types/global';
-import { uuid7 } from '@libs/common/utils';
+import { UserId } from '@libs/core';
+import { uuid7 } from '@libs/core';
 
 import { BaseEntity } from './base.entity';
 
@@ -10,7 +10,7 @@ interface IRefreshSession {
   ua: string | null;
   fingerprint?: string | null;
   ip?: string | null;
-  expiresIn: number;
+  expiresAtMs: number;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,6 +1,6 @@
 import { sign, verify, decode, Algorithm, JwtPayload, SignOptions, TokenExpiredError } from 'jsonwebtoken';
 
-import { AppError, ErrorCode } from '@libs/common/errors';
+import { AppError, ErrorCode } from '@libs/core';
 
 type SighOptionsType = Omit<SignOptions, 'algorithm'> & { secret?: string };
 type PayloadType = string | Buffer | object;

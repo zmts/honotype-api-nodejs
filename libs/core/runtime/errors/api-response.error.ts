@@ -1,7 +1,7 @@
-import { HttpStatus } from '@libs/common/api';
+import { HttpStatus } from '@libs/core';
 
 export interface ApiResponseError<E> {
-  timestamp: string;
+  timestampIso: string;
   path: string;
   status: HttpStatus;
   code: string;

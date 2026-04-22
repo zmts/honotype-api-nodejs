@@ -18,6 +18,7 @@ export class ApiResponse<T = any> {
     this.cookies = options?.cookies || [];
     this.headers = options?.headers || {};
     this.pagination = options?.pagination;
+    this.meta = options?.meta;
   }
 
   getStatus(method: string): HttpStatus {

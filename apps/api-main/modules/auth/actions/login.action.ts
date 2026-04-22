@@ -1,5 +1,5 @@
-import { Cookie } from '@libs/common/api';
-import { AppError, ErrorCode } from '@libs/common/errors';
+import { Cookie } from '@libs/core';
+import { AppError, ErrorCode } from '@libs/core';
 import { BaseAction } from '@libs/core';
 import { User } from '@libs/entities';
 
@@ -28,11 +28,11 @@ export class LoginAction extends BaseAction<[LoginDto], AuthResource> {
       throw new AppError(ErrorCode.INVALID_CREDENTIALS);
     }
 
-    const { expiresInMs, cookieMaxAgeSec } = this.authService.getRefreshTokenTimeIntervals();
+    const { expiresAtMs, cookieMaxAgeSec } = this.authService.getRefreshTokenTimeIntervals();
     const newRefSession = this.authService.buildRefreshSessionEntity({
       userId: user.id,
       fingerprint: dto.fingerprint,
-      expiresIn: expiresInMs,
+      expiresAtMs,
     });
 
     await this.authService.addRefreshSession(newRefSession);
