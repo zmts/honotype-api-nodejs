@@ -76,8 +76,12 @@ modules/example/
 
 - controller связывает HTTP route с use case, но не реализует бизнес-логику;
 - один `Action` выражает один use case;
+- каждый `Action` class хранится в отдельном файле `actions/<operation>-<entity>.action.ts`; `actions/index.ts` содержит только exports;
 - `Action` не получает `Hono.Context` и не формирует HTTP response;
+- `Action` не создаёт services через `new`; он использует только сервисы, созданные в `dependency.ts` и переданные через constructor;
 - service содержит переиспользуемые доменные операции, которые не принадлежат одной action;
+- чистые stateless helpers без зависимостей и lifecycle размещаются в `modules/<module>/common/` в файлах с предметным именем, например `slugs.ts`, без суффикса `.service`;
+- `services/` используется только для переиспользуемой доменной логики с самостоятельной ответственностью и реальными зависимостями;
 - repository скрывает Drizzle и детали запросов;
 - resource маппит внутренние данные в публичный API contract;
 - module не импортирует internals другого module напрямую; общий контракт должен быть выражен явно.
@@ -91,8 +95,8 @@ modules/example/
 Проект не использует глобальный DI container. Зависимости собираются вручную:
 
 - global dependencies — cross-cutting services, например JWT middleware;
-- module dependencies — repositories и services конкретного модуля;
-- action получает зависимости через constructor.
+- module dependencies — repositories и services конкретного модуля; `dependency.ts` создаёт их один раз и передаёт через dependency interface;
+- action получает repositories и services только через constructor dependencies.
 
 Это намеренный подход. Он делает runtime wiring и ownership зависимостей видимыми в коде.
 
@@ -170,12 +174,22 @@ Repositories:
 - переводят database-specific errors в `AppError`;
 - не делают presentation mapping.
 
+Если несколько методов поиска одной сущности отличаются только дополнительными условиями одного lookup, repository предоставляет один `findOneBy(filter)`. Тип `filter` должен быть узким domain-типом с обязательным ключом поиска; нельзя принимать `Partial<Entity>` или допускать пустой filter. Методы с разной бизнес-семантикой или разными правилами доступа не объединяются.
+
+Для lookup, где отсутствие сущности является ошибкой use case, repository поддерживает опцию `{ findOrThrow: true }`. В этом режиме repository выбрасывает `AppError(ErrorCode.NOT_FOUND)` и возвращает non-null entity. Не создавать service только для вызова repository и преобразования `null` в `NOT_FOUND`; service содержит только общую доменную логику модуля.
+
 Изменение схемы данных всегда состоит из двух синхронных частей:
 
 1. новая Knex migration в `database/migrations`;
 2. соответствующее изменение Drizzle schema в `database/schemas`.
 
 Knex migration описывает эволюцию реальной базы. Drizzle schema описывает runtime contract. Ни один из них не заменяет другой.
+
+## Database identifiers
+
+- Для таблиц первичный ключ должен быть `bigint generated always as identity primary key`.
+- Внешние ключи должны использовать тот же тип, что и связанный первичный ключ — обычно `bigint`.
+- Не использовать `serial` и `bigserial` в новых схемах; применять `GENERATED ... AS IDENTITY`.
 
 ## Критерии готовности нового модуля
 

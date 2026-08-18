@@ -1,4 +1,4 @@
-# TypeScript Best Practices for Codex
+# TypeScript Best Practices
 
 ## Purpose
 

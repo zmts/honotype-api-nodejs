@@ -1,4 +1,4 @@
-# JavaScript Best Practices for Codex
+# JavaScript Best Practices
 
 ## Purpose
 

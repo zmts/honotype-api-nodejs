@@ -1,12 +1,12 @@
-# Code Quality Rules For Codex
+# Code Quality Rules
 
-- При генерации, изменении, рефакторинге и ревью кода в этом workspace используй `clean-code-rules-codex.md` как базовый источник правил по читаемости, простоте и поддерживаемости.
-- Для JavaScript-кода дополнительно опирайся на `javascript-best-practices-codex.md`.
-- Для TypeScript-кода дополнительно опирайся на `typescript-best-practices-codex.md`.
+- При генерации, изменении, рефакторинге и ревью кода в этом workspace используй `clean-code-rules.md` как базовый источник правил по читаемости, простоте и поддерживаемости.
+- Для JavaScript-кода дополнительно опирайся на `javascript-best-practices.md`.
+- Для TypeScript-кода дополнительно опирайся на `typescript-best-practices.md`.
 - Если инструкции этих документов конфликтуют, применяй такой приоритет:
   1. требования пользователя и локальные инструкции workspace;
-  2. `clean-code-rules-codex.md`;
-  3. профильный документ языка: `javascript-best-practices-codex.md` или `typescript-best-practices-codex.md`;
+  2. `clean-code-rules.md`;
+  3. профильный документ языка: `javascript-best-practices.md` или `typescript-best-practices.md`;
   4. существующие соглашения конкретного репозитория, если они не противоречат пунктам выше.
 - При написании нового кода и изменении существующего кода считай эти документы практиками по умолчанию и не отступай от них без явной причины.
 - Не используй inline type imports в сигнатурах и generic-аннотациях вида `import('...').SomeType`. Для типов используй обычный `import type { SomeType } from '...'` вверху файла.

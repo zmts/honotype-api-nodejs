@@ -1,4 +1,4 @@
-# Clean Code Rules for Codex
+# Clean Code Rules
 
 ## Purpose
 
@@ -384,7 +384,7 @@ Every extra line increases maintenance cost.
 
 ---
 
-## Practical decision rules for Codex
+## Practical decision rules
 
 When generating or modifying code, apply these priorities in order:
 
@@ -441,7 +441,7 @@ When rules conflict, use judgment.
 
 ---
 
-## What Codex should avoid by default
+## What should be avoided by default
 
 - clever one-liners that reduce readability
 - generic helper names like `processData`, `handleResponse`, `doStuff`
