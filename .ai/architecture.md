@@ -19,8 +19,10 @@ apps/api-main
   modules/                business modules and HTTP controllers
 
 libs
-  core/                   framework/runtime primitives without business logic
-  common/                 reusable API contracts and resources
+  core/
+    kernel/               abstract contracts and base application rules
+    runtime/              reusable technical implementations
+  common/                 shared contracts, resources and stateless helpers
   entities/               lightweight domain entities
 ```
 
@@ -31,6 +33,61 @@ libs
 - `libs/entities` — доменные данные и небольшое локальное поведение.
 - `libs/core` — только переиспользуемые инфраструктурные примитивы. Бизнес-логика конкретного домена сюда не помещается.
 - `libs/common` — только действительно общие transport-артефакты, а не contracts одного модуля.
+
+## Core: kernel, runtime и common
+
+### `libs/core/kernel`
+
+`kernel` содержит только базовые абстракции приложения:
+
+- interfaces, abstract classes, базовые types и protocol contracts;
+- общие lifecycle- и repository-контракты;
+- правила взаимодействия слоёв.
+
+`kernel` не содержит concrete clients, I/O, HTTP handlers, Redis, WebSocket, database access, domain logic или imports из `apps/**` и `modules/**`.
+
+### `libs/core/runtime`
+
+`runtime` содержит переиспользуемые технические реализации, которые выполняют работу во время запуска приложения:
+
+- HTTP server primitives, base controller, middleware, validator, error handling;
+- Redis-, database-, queue- и generic WebSocket-клиенты;
+- lifecycle utilities, retries, migrations и другие инфраструктурные адаптеры.
+
+`runtime` может зависеть от `kernel`, внешних пакетов и других `libs/**`, но не от `apps/**` или доменных `modules/**`.
+
+### `libs/common`
+
+`common` содержит нейтральные, переиспользуемые несколькими модулями contracts, resources и stateless helpers. Здесь допустимы общие API contracts, response envelopes, pagination, pure helpers, преобразования, форматирование и validation primitives без I/O, lifecycle и domain-specific правил.
+
+`common` не содержит infrastructure clients, HTTP/Redis/WebSocket/database access и бизнес-логику конкретного домена.
+
+### Правило выбора расположения
+
+- Абстракция или interface без concrete runtime behavior → `libs/core/kernel`.
+- Переиспользуемая техническая реализация с I/O, lifecycle или framework integration → `libs/core/runtime`.
+- Общий нейтральный API contract, resource или pure stateless helper → `libs/common`.
+- Контракт или логика одного домена → `apps/api-main/modules/<module>`.
+- `libs/**` не импортирует `apps/**`, включая `import type`.
+
+## Направление зависимостей
+
+`apps` — верхний application layer, `libs` — нижние переиспользуемые слои.
+
+- `apps/**` может импортировать `libs/**`.
+- `libs/**` не может импортировать ничего из `apps/**`.
+- Запрет относится к runtime-импортам, `import type`, alias-путям, относительным путям и barrel exports.
+- `libs/**` может зависеть только от Node.js, внешних пакетов и других модулей в `libs/**`.
+- Если коду внутри `libs/**` нужен тип или контракт, который сейчас объявлен в `apps/**`, этот тип или контракт нужно перенести либо выделить в `libs/**`. Импортировать его из `apps/**` нельзя.
+
+### Владение infrastructure-клиентами
+
+Infrastructure-клиент принадлежит слою, в котором он объявлен. Потребители импортируют клиент и связанные с ним контракты напрямую из слоя-владельца.
+
+Нельзя создавать compatibility re-export, переименованный alias или промежуточный модуль в другом слое только для сохранения прежнего пути импорта.
+
+При переносе клиента в другой слой в том же изменении необходимо обновить импорты всех потребителей и удалить устаревшие промежуточные exports или каталоги.
+
 
 ## Composition root и регистрация модулей
 
