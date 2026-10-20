@@ -1,10 +1,13 @@
-import { authConfig } from '@api-main/config';
+import { authConfig, redisConfig } from '@api-main/config';
 
-import { JwtMiddleware, SymmetricJwtService } from '@libs/core';
+import { JwtMiddleware, RedisLockClient, SymmetricJwtService } from '@libs/core';
+
+import { redis } from './redis';
 
 interface IGlobalDependency {
   jwtService: SymmetricJwtService;
   jwtMiddleware: JwtMiddleware;
+  locks: RedisLockClient;
 }
 
 const jwtService = new SymmetricJwtService({
@@ -16,4 +19,5 @@ const jwtService = new SymmetricJwtService({
 export const globalDeps: IGlobalDependency = {
   jwtService,
   jwtMiddleware: new JwtMiddleware(jwtService),
+  locks: new RedisLockClient(redis, redisConfig.lockKeyPrefix, redisConfig.commandTimeoutMs),
 };

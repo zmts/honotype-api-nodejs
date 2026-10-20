@@ -1,3 +1,5 @@
+import process from 'node:process';
+
 import { globalDeps, initMiddleware } from '@api-main/global';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
@@ -7,6 +9,7 @@ import { globalExceptionHandler, routeNotFound } from '@libs/core';
 
 import { appConfig } from './config';
 import { db } from './database';
+import { redis } from './global/dependency/redis';
 import { controllers } from './modules';
 
 declare module 'hono' {
@@ -14,6 +17,7 @@ declare module 'hono' {
 }
 
 export async function server(): Promise<void> {
+  await redis.connect();
   const { rows } = await db.execute('select 1 + 1 as success');
   console.log('########################################');
   console.log('Database connected successfully', rows);
@@ -46,5 +50,22 @@ export async function server(): Promise<void> {
   console.log('\n########################################');
   console.log(`Server is running on ${host}:${port}`);
   console.log('########################################');
-  serve({ fetch: app.fetch, port, hostname: host });
+  const httpServer = serve({ fetch: app.fetch, port, hostname: host });
+  let isShuttingDown = false;
+
+  const shutdown = (): void => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+
+    httpServer.close(() => {
+      if (redis.isOpen) redis.destroy();
+      db.$client.end().catch(error => {
+        console.error('Failed to close database connection', error);
+        process.exitCode = 1;
+      });
+    });
+  };
+
+  process.once('SIGINT', shutdown);
+  process.once('SIGTERM', shutdown);
 }

@@ -182,7 +182,12 @@ Entity / domain result -> Resource -> Contract -> API JSON
 
 `validations/schema.ts` содержит только переиспользуемые Zod-примитивы полей конкретного модуля. `index.ts` в `inout/` и его подпапках используется только для barrel exports.
 
-`contracts` описывают публичный API shape. Они не должны быть типом Drizzle row или entity.
+`contracts/` и `*.contract.ts` предназначены исключительно для типов публичного REST API — данных, которыми backend обменивается с внешним потребителем. Они не должны быть типом Drizzle row или entity.
+
+Типы и интерфейсы сервисов, actions, repositories и инфраструктурных клиентов размещаются в локальном `types.ts`.
+Это относится также к параметрам и результатам их публичных методов.
+Экспорт типа и использование другим backend-модулем не делают его контрактом REST API.
+Например, `LockResult<T>` клиента Redis относится к `redis-lock/types.ts`.
 
 `resources` — единственное обычное место для mapping entity в API output. Обычные бизнес-route должны возвращать `Resource` или `ResourceList` через `BaseController.execute(...)`.
 

@@ -5,6 +5,7 @@ export * from './controller';
 export * from './database';
 export * from './errors';
 export * from './jwt';
+export * from './redis-lock';
 export * from './types';
 export * from './utils';
 export * from './validator';
