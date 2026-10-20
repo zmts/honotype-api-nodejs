@@ -14,6 +14,16 @@ export default [
   ...tsEslintPlugin.configs['flat/recommended'],
   prettierRecommended,
   {
+    files: ['**/*.jsx'],
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+  },
+  {
     files: typescriptFiles,
     languageOptions: {
       parser: tsParser,
