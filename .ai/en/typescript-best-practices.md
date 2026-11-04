@@ -30,10 +30,11 @@ Do not introduce complexity without a concrete payoff.
 ## 2. Type safety defaults
 
 - Use `strict` TypeScript settings by default.
-- Prefer `unknown` over `any` for untrusted input.
+- Do not use `any` to bypass type errors. Use `unknown` for data of unknown structure, then validate or narrow it before use.
+- If `any` is necessary because of a third-party library limitation or a dynamic interface, isolate it in the smallest integration boundary, briefly explain why it is needed, and do not propagate the unsafe type into business logic.
 - Treat external data as unsafe until validated.
 - Use `never` for exhaustive checks in discriminated unions.
-- Avoid unsafe `as` assertions unless there is no better option.
+- Do not replace `any` with an unjustified type assertion: an assertion does not validate data at runtime. Avoid unsafe `as` assertions unless there is no better option.
 
 ### Default stance
 - external input -> `unknown`

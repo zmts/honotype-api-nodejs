@@ -466,4 +466,3 @@ The final code should feel:
 - consistent with the project
 
 If there is a choice between impressive code and understandable code, choose understandable code.
-
