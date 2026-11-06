@@ -66,7 +66,7 @@ A function should have one clear responsibility.
 If it validates data, persists data, sends notifications, formats output, and logs — it is doing too much.
 
 ### Signals that a function is overloaded
-- it has multiple sections separated by comments
+- it has sections with unrelated responsibilities
 - it mixes business logic with infrastructure concerns
 - it has many condition branches for unrelated reasons
 - its name contains `and`, `then`, or several verbs
@@ -75,6 +75,30 @@ If it validates data, persists data, sends notifications, formats output, and lo
 - small focused functions
 - orchestration in one place, implementation in smaller units
 - separation of business logic from IO
+
+### Function structure and argument order
+
+Arrange logic in execution order: validation and early returns → preparation → main operation → result. Separate meaningful stages with blank lines. Name intermediate values by their role; do not add variables or sections only for visual structure. Avoid unnecessary repeated calculations and passes over data.
+
+Pass a small number of required arguments positionally first, followed by optional parameters in one object. If the combined argument list is long or its order is hard to remember, use one typed object with required and optional fields. Do not group arguments mechanically when an object makes the call less clear.
+
+```ts
+function estimateRemainingMs(
+  completed: number,
+  total: number,
+  options: { elapsedMs?: number; minimumMs?: number } = {},
+): number | null {
+  const elapsedMs = options.elapsedMs ?? 0;
+  const hasInvalidInput = completed <= 0 || total < completed || elapsedMs < 0;
+  if (hasInvalidInput) return null;
+
+  const remaining = total - completed;
+  const msPerItem = elapsedMs / completed;
+  const estimatedMs = Math.ceil(remaining * msPerItem);
+
+  return Math.max(estimatedMs, options.minimumMs ?? 0);
+}
+```
 
 ---
 
