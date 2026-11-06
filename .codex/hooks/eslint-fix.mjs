@@ -1,32 +1,61 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
-import { isAbsolute, relative, resolve, sep } from 'node:path';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const projectRoot = realpathSync(fileURLToPath(new URL('../..', import.meta.url)));
 
-function fixPatchedFiles(event) {
-  if (event.tool_name !== 'apply_patch' || typeof event.tool_input?.command !== 'string') return;
+const stateDir = join(tmpdir(), 'trd-chain-eslint-hooks');
 
-  const paths = [...event.tool_input.command.matchAll(/^\*\*\* (?:Add File|Update File|Move to): (.+)$/gm)];
-  const files = paths
-    .map(match => resolve(event.cwd ?? projectRoot, match[1]))
-    .filter(path => /\.(?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$/.test(path) && existsSync(path) && statSync(path).isFile())
-    .map(path => realpathSync(path))
-    .filter(path => {
-      const relativePath = relative(projectRoot, path);
-      return relativePath !== '..' && !relativePath.startsWith(`..${sep}`) && !isAbsolute(relativePath);
-    });
+function gitFiles(args) {
+  const result = spawnSync('git', args, { cwd: projectRoot, encoding: 'buffer' });
+  if (result.status !== 0) throw new Error(result.stderr.toString().trim() || 'Git failed');
+  return result.stdout.toString().split('\0').filter(Boolean);
+}
+
+function changedFiles() {
+  const paths = new Set([
+    ...gitFiles(['ls-files', '-m', '-o', '--exclude-standard', '-z']),
+    ...gitFiles(['diff', '--cached', '--name-only', '-z']),
+  ]);
+  return [...paths].map(path => resolve(projectRoot, path)).filter(path => {
+    if (!/\.(?:ts|mts|cts|tsx)$/.test(path) || !existsSync(path)) return false;
+    const relativePath = relative(projectRoot, realpathSync(path));
+    return relativePath !== '..' && !relativePath.startsWith(`..${sep}`) && !isAbsolute(relativePath);
+  });
+}
+
+function fingerprint(path) {
+  return createHash('sha256').update(readFileSync(path)).digest('hex');
+}
+
+function handle(event) {
+  if (!event.session_id || !event.tool_use_id || event.permission_mode === 'plan') return;
+  const key = createHash('sha256').update(`${event.session_id}:${event.tool_use_id}`).digest('hex');
+  const path = join(stateDir, `${key}.json`);
+
+  if (event.hook_event_name === 'PreToolUse') {
+    mkdirSync(stateDir, { recursive: true });
+    const before = Object.fromEntries(changedFiles().map(file => [file, fingerprint(file)]));
+    writeFileSync(path, JSON.stringify(before));
+    return;
+  }
+  if (event.hook_event_name !== 'PostToolUse' || !existsSync(path)) return;
+  const before = JSON.parse(readFileSync(path, 'utf8'));
+  rmSync(path);
+  const files = changedFiles().filter(file => before[file] !== fingerprint(file));
   if (files.length === 0) return;
 
   const eslintPath = resolve(projectRoot, 'node_modules/eslint/bin/eslint.js');
-  const result = spawnSync(process.execPath, [eslintPath, '--fix', '--no-warn-ignored', '--', ...new Set(files)], {
+  const result = spawnSync(process.execPath, [eslintPath, '--fix', '--no-warn-ignored', '--', ...files], {
     cwd: projectRoot,
     encoding: 'utf8',
   });
-  if (result.status === 0) return;
-
-  report(result.error?.message ?? (`${result.stdout ?? ''}${result.stderr ?? ''}`.trim() || 'ESLint process failed'));
+  if (result.status !== 0) {
+    report(result.error?.message ?? (`${result.stdout ?? ''}${result.stderr ?? ''}`.trim() || 'ESLint process failed'));
+  }
 }
 
 function report(message) {
@@ -36,7 +65,7 @@ function report(message) {
 }
 
 try {
-  fixPatchedFiles(JSON.parse(readFileSync(0, 'utf8')));
+  handle(JSON.parse(readFileSync(0, 'utf8')));
 } catch (error) {
   report(`ESLint hook failed: ${error.message}`);
 }

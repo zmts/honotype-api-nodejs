@@ -1,8 +1,20 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^(apply_patch|Bash|functions\\.exec_command|functions\\.apply_patch|mcp__serena__.*|mcp__node_repl__js)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/eslint-fix.mjs\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
-        "matcher": "^apply_patch$",
+        "matcher": "^(apply_patch|Bash|functions\\.exec_command|functions\\.apply_patch|mcp__serena__.*|mcp__node_repl__js)$",
         "hooks": [
           {
             "type": "command",
