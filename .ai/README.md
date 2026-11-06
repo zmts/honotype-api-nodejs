@@ -5,9 +5,6 @@
 |---|---|---|
 | Architecture | [architecture.md](en/architecture.md) | [architecture.md](ru/architecture.md) |
 | Code quality | [code-quality.md](en/code-quality.md) | [code-quality.md](ru/code-quality.md) |
-| Clean code | [clean-code-rules.md](en/clean-code-rules.md) | [clean-code-rules.md](ru/clean-code-rules.md) |
-| JavaScript | [javascript-best-practices.md](en/javascript-best-practices.md) | [javascript-best-practices.md](ru/javascript-best-practices.md) |
-| TypeScript | [typescript-best-practices.md](en/typescript-best-practices.md) | [typescript-best-practices.md](ru/typescript-best-practices.md) |
 | Migrations | [migrations.md](en/migrations.md) | [migrations.md](ru/migrations.md) |
 
 ## Required Synchronization
