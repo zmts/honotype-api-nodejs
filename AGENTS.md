@@ -40,10 +40,17 @@ Keep each shared business rule, algorithm, validation, configuration, or definit
 - Introduce abstractions only when they solve a concrete problem and reduce overall complexity.
 - Preserve existing behavior during refactoring unless changes are explicitly required.
 
-- При работе в этом репозитории обязательно соблюдай правила из [`code-quality.md`](.ai/en/code-quality.md).
-- `code-quality.md` является источником правды для code quality, naming, style и общих правил написания кода для Codex в этом workspace.
-- Не дублируй code quality rules в этом файле: архитектурные правила находятся в `architecture.md`, а `code-quality.md` — источник правил качества кода.
+## Code Quality
+
+- Follow [`code-quality.md`](.ai/en/code-quality.md), the single source of truth for code quality, naming, style, and general coding rules in this workspace.
+- Do not duplicate code quality rules in `AGENTS.md`. Architectural rules belong in [`architecture.md`](.ai/en/architecture.md).
 
 ## Architecture
 
 Architectural rules, layers, dependencies, and endpoint flows are defined in [`architecture.md`](.ai/en/architecture.md). This is the single source of truth for the project's architecture.
+
+## AI Documentation
+
+- These requirements apply only to AI documentation under `.ai/`.
+- Before changing these documents, read and follow [`.ai/README.md`](.ai/README.md).
+- Update corresponding `.ai/en/` and `.ai/ru/` documents together in the same change.

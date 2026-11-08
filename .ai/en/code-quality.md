@@ -49,6 +49,7 @@ Architectural layers, dependency directions, file placement, and contracts betwe
 - A function should have one clear responsibility. Separate calculations and business rules from IO and other side effects. Keep orchestration of related steps in an understandable place.
 - Arrange logic in execution order: validation and early returns → preparation → main operation → result. Separate meaningful stages with blank lines without creating artificial sections or variables.
 - Reduce nesting with guard clauses and early returns.
+- Use ternary operators only for simple, single-level expressions. Do not nest ternary operators in conditions or branches. Replace nested ternaries with `if / else` or `switch`, preserving condition priority and short-circuit evaluation.
 - Reduce the number of parameters when possible without losing clarity or correctness. Grouping parameters into an object does not by itself reduce a function's dependencies.
 - Pass a small number of required arguments positionally, followed by optional parameters in an object. If there are many arguments or their order is hard to remember, use one typed object. Do not group parameters mechanically when it reduces readability.
 - Avoid boolean flags that switch function behavior. An explicit mode such as `{ mode: 'discounted' }` is clearer than a `true` argument.
