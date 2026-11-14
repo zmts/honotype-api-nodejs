@@ -91,6 +91,8 @@ Architectural layers, dependency directions, file placement, and contracts betwe
 - Do not add `async` when there is no asynchronous work and the contract does not require a Promise. Do not use `await` for synchronous calls merely for consistency or hypothetical future needs.
 - When removing `async`, preserve the result and error contract: a synchronous exception and a rejected Promise behave differently. A synchronous implementation may serve an interface that requires a Promise.
 - Do not place `await` directly in function, method, or constructor arguments. First store the awaited value in a clearly named variable, then pass it as an argument. For example, use `const result = await inner(); outer(result)` instead of `outer(await inner())`.
+- Do not use `await` in conditions, including `if`, loop, and ternary conditions. First store the awaited result in a clearly named variable, then use that variable in the condition. Preserve evaluation order, short-circuit behavior, and repeated evaluation in loops. For example, use `const canProceed = await checkPermission(); if (canProceed) { ... }` instead of `if (await checkPermission()) { ... }`.
+- Do not use `return await`. First store the awaited result in a clearly named variable, then return that variable. For example, use `const user = await loadUser(); return user;` instead of `return await loadUser();`.
 - Separate loading from meaningful result transformation. Do not call `map`, `filter`, `sort`, or similar methods directly on an `await` result when an intermediate variable improves clarity.
 
 ```ts
